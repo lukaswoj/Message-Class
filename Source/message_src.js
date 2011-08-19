@@ -65,7 +65,8 @@ var Message = new Class({
 		fxOutDuration: 'normal',		// se the out duration
 		yesLink: "Yes",
 		noLink: "No",
-        waitTime: 2000
+        waitTime: 2000,
+        endTopPosMargin: 20
 	},
 	
 	initialize: function(options){
@@ -264,7 +265,7 @@ var Message = new Class({
 			Object.append(this.boxPos,{
 				startTop  : startTopPos,
 				startLeft : startLeftPos,
-				endTop 	  : endTopPos 
+				endTop 	  : endTopPos - this.options.endTopPosMargin
 			});		
 		}
 	},
