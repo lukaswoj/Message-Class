@@ -61,7 +61,6 @@ var Message = new Class({
 		stack: true,				// stack multiple messages one OVER or UNDER the other; setting to false will stack them on TOP of one another
 		fxTransition: null,			// set your own transition.
 		fxDuration: 'normal',		// set the transition duration
-		fxUrgentTransition: Fx.Transitions.Bounce.easeOut, // set your own urgent transition
 		fxOutTransition: null,		// set the out transition
 		fxOutDuration: 'normal',		// se the out duration
 		yesLink: "Yes",
@@ -183,21 +182,7 @@ var Message = new Class({
 			'z-index': '1'
 		}).fade('in');
 		
-		if(!this.options.isUrgent){			
-			this.fx.start('top', this.boxPos.endTop);
-			
-		// Transition using the Bounce Fx if it's urgent.
-		} else {
-			
-			var urgentFx = new Fx.Tween(this.box, {
-				duration: 'long', 
-				transition: this.options.fxUrgentTransition
-			});
-			
-			urgentFx.start('top', this.boxPos.endTop);
-			
-		}
-		
+        this.fx.start('top', this.boxPos.endTop);
 		this.isDisplayed = true; // A utility for the procedure. Stores a variable that the message is currently being displayed.
 	},
 	
@@ -225,8 +210,7 @@ var Message = new Class({
 			mcClass = null,
 			tops;
 			
-		if(this.options.isUrgent){ mcClass = '[class*=mcUrgent]';}
-		else if(this.options.top){ mcClass = '[class*=mcTop]';}
+        if(this.options.top){ mcClass = '[class*=mcTop]';}
 		else if(this.options.callingElement != undefined){ mcClass = '[class*=mcElement]'}
 		else { mcClass = '[class*=mcDefault]'; }
 			
@@ -276,25 +260,6 @@ var Message = new Class({
 				endTop	  : this.options.passEvent.page.y + stackDown - (stackPad * 3)
 			});
 			
-		/* If the message is urgent or centered, displays the message in the center of the page, 
-		   getting the users attention like a punch in the face! Like... POW! */
-		} else if((this.options.isUrgent && !usePosition) || this.options.centered) {
-			this.box.position();
-			this.boxPosition = this.box.getCoordinates();
-			
-			if(this.options.stack && messages.length > 1){
-				stackDown = tops[tops.length-1] + heights[heights.length-2] + stackPad;
-			} else {
-				stackDown = this.boxPosition.top;	
-			}
-			
-			Object.append(this.boxPos,{
-				startTop  : this.boxPosition.top - 100,
-				startLeft : this.boxPosition.left,
-				endTop 	  : stackDown
-			});
-			
-		// Positions passed here...
 		} else {
 			Object.append(this.boxPos,{
 				startTop  : startTopPos,
@@ -335,11 +300,10 @@ var Message = new Class({
 		/* 	I put assign a specific class to each message to support stacking. This is done so that I'll know
 			I'll know where to stack other messages that are the same. */
 		if(this.options.top){ top = " mcTop"; }
-		else if(this.options.isUrgent){ urgent = " mcUrgent"; }
 		else if(this.options.callingElement != undefined){ mcElement = " mcElement"; }
 		else{ normal = ' mcDefault'; }
 			
-		newBox = new Element('div', {'class': 'msgBox messageClass' + top + normal + urgent + mcElement, 'styles': {'max-width':this.options.width, 'width':this.options.width}});
+		newBox = new Element('div', {'class': 'msgBox messageClass' + top + normal + mcElement, 'styles': {'max-width':this.options.width, 'width':this.options.width}});
 		imageSize = 0;
 		if(this.options.icon != null) {
 			var newIcon = new Element('div', {'class': 'msgBoxIcon'});
